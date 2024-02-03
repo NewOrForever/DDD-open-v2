@@ -1,0 +1,3 @@
+com\tlmall\open\domain\genservice\adaptor\GsService.class
+com\tlmall\open\domain\genservice\adaptor\SimpleRequestMsgHeader.class
+com\tlmall\open\domain\genservice\adaptor\SimpleRequestMsg.class

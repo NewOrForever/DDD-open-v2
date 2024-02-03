@@ -1,0 +1,209 @@
+<meta charset="UTF-8">
+<div class="row">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>外部系统列表</h5><br />
+			</div>
+			<div class="ibox-content">
+				<div ng-repeat="sysInfo in allsys track by $index" class="infont col-md-3 col-sm-4">
+					<a href="javascript:void(0)" ng-click="showSysInfo(sysInfo)"><i class="fa fa-laptop fa-5x"></i><br />{{ sysInfo.sysName}}</a>
+				</div>
+				<div class="infont col-md-3 col-sm-4">
+					<a href="javascript:void(0)" ng-click="showSysModal()"><i
+						class="fa fa-times-circle fa-5x fa-spin"></i><br />添加外部系统</a>
+				</div>
+				<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;<br />&nbsp;
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-lg-12">
+		<div class="ibox float-e-margins">
+			<div class="ibox-title">
+				<h5>接口配置说明：</h5>
+			</div>
+			<div class="ibox-content">
+				<ul>
+					<li>第一版：基于SPI的本地接口实现。后端服务按照SPI规范要求，以Jar包形式提供功能接入包。</li>
+					<li>客户端接入规范：</li>
+					<li>要接入的第三方系统需预先维护好系统信息。由第三方系统提供消息推送路径，消息推送参数。平台注册第三方系统，同时生成一对秘钥。</li>
+					<li>平台将系统ID，系统公钥主动提供给第三方系统，第三方系统使用配套的示例代码进行接入。</li>
+					<li><a href="ftoulClient-0.0.1.jar">客户端jar</a>，<a href="InterFaceDemo.java">接口调用示例代码</a></li>
+				</ul><hr /><ul>
+					<li>第二版接口：基于Nacos的微服务实现。后端服务需要按照规范在Nacos上提供服务注册</li>
+					<li>1、后端服务往对应的Nacos集群上的DEFAULT_GROUP注册一个服务，服务名即对应客户端请求的ServiceCode。</li>
+					<li>2、后端服务需相应路径为/open/services的POST请求地址。客户端请求的参数报文将整合成JSON字符串全部请求过来。</li>
+					<li>客户端接入规范不变。</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal inmodal fade" id="sysModal" role="dialog"
+	aria-hidden="true">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal">
+					<span aria-hidden="true">&times;</span><span class="sr-only">关闭</span>
+				</button>
+				<h4 class="modal-title">外围交互系统</h4>
+			</div>
+			<div class="modal-body">
+				<div class="input-group">
+					<span class="input-group-addon">系统ID:*</span> <span
+						style="position: relative; z-index: 9999;"> <input
+						type="text" class="form-control" placeholder="系统ID"
+						ng-model="sys.sysId" />
+					</span>
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">系统名称:*</span> <input type="text"
+						class="form-control" ng-model="sys.sysName" />
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">消息推送路径:*</span> <input type="text"
+						class="form-control" ng-model="sys.notifyUrl" />
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">消息推送参数:</span> <input type="text"
+						class="form-control" ng-model="sys.notifyParam" />
+				</div>
+				<hr />
+				<div class="input-group">
+					<span class="input-group-addon">系统用户名:</span> <input type="text"
+						class="form-control" ng-model="sys.userName" />
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">系统用户密码:</span> <input type="password"
+						class="form-control" ng-model="sys.pwd" />
+				</div>
+				<div class="input-group">
+					<span class="input-group-addon">系统IP白名单:</span> <input type="text"
+						class="form-control" ng-model="sys.authedIp" />
+				</div>
+				<div class="input-group media-body">
+					<span>系统私钥:</span>
+					<div class="well">{{sys.privatekey}}</div>
+				</div>
+				<div class="input-group media-body">
+					<span>系统公钥:</span>
+					<div class="well">{{sys.publickey}}</div>
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-white" data-dismiss="modal">关闭</button>
+				<button type="button" class="btn btn-primary" ng-if="sys.sysId && sys.sysName && sys.notifyUrl"
+					ng-click="addSys()">确定</button>
+				<button type="button" class="btn btn-primary" ng-if="sys.sysId" ng-click="deleteSys()">删除</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal inmodal fade" id="passModal" role="dialog"
+	aria-hidden="true">
+	<div class="modal-dialog modal-md">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title" ng-if="!order.orderId" )>输入访问秘钥</h4>
+			</div>
+			<div class="modal-body">
+				<div class="input-group">
+					<span class="input-group-addon">输入访问秘钥：</span> <input type="text"
+						class="form-control" ng-model="passKey" />
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-primary" ng-if="passKey"
+					ng-click="confirmKey()">确定</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+
+var loadData = function(){
+	$http.post("/sysManage/querySys",{}).success(function(res){
+		if(typeof(res)=="object"){
+			$scope.allsys = res;	
+		}else{
+			toastr.error("数据加载出错，请查看后台日志", "Tuling-open");
+		}
+	})
+}
+
+var pageload = function(){
+	$('#passModal').modal({backdrop: 'static', keyboard: false});
+	//loadData();
+	$("#passModal").modal("show");
+	$scope.showSysModal = function(){
+		$scope.sys = {};
+		$("#sysModal").modal("show");
+	}
+	$scope.addSys = function(){
+		$.ajax({
+	        url: "/sysManage/newSys",
+	        type: "POST",
+	        contentType : 'application/json;charset=utf-8', //设置请求头信息
+	        dataType:"json",
+	        data: JSON.stringify($scope.sys),            //将Json对象序列化成Json字符串，toJSON()需要引用jquery.json.min.js
+	        success: function(response){
+					if(!response.code){
+						toastr.warning('更新失败', 'Tuling-open');
+					}else if(response.code>0){
+						toastr.success(response.desc, "Tuling-open");
+					}else{
+						toastr.error(response.desc, "Tuling-open");
+					}
+					$scope.sys = {};
+					//使用JS修改Angularjs作用域的变量时，需要调用下$apply()方法，传播当前的变化，更新数据的双向绑定。用$http默认就会自己传播。
+					$scope.$apply();
+					$("#sysModal").modal("hide");
+					loadData();
+	        }
+		})
+	}
+	$scope.deleteSys = function(){
+		swal({
+			title:"删除系统",
+			text:"目前系统删除后无法恢复，确认要删除该外围系统吗？ ",
+			type: "warning",
+	        showCancelButton: true,
+	        cancelButtonText:"关闭",
+	        confirmButtonColor: "#DD6B55",
+	        confirmButtonText: "确认",
+	        closeOnConfirm: true
+		},function(){
+			$http.post("/sysManage/deleteSys",{"sysId":$scope.sys.sysId})
+			.success(function(data){
+				swalsucc("成功删除"+data+"个外围系统","Tuling-open");
+				$scope.queryOrder();
+			})
+		})
+	}
+	
+	$scope.showSysInfo = function(sysInfo){
+		$scope.sys=sysInfo;
+		$("#sysModal").modal("show");
+	}
+	
+	$scope.confirmKey = function(){
+		$http.post("/sysManage/passKey",{"passKey":$scope.passKey})
+		.success(function(res){
+			if(res && res.result=="0"){
+				$("#passModal").modal("hide");
+				loadData();
+			}else{
+				toastr.error("请不要非法访问", "Tuling-open");
+			}
+		})
+	}
+}
+
+</script>

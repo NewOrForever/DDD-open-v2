@@ -1,0 +1,3 @@
+com\tulingmall\service\mobiletag\util\HTTPUtil.class
+com\tulingmall\service\mobiletag\adaptor\MobileTagServiceImpl.class
+com\tulingmall\service\mobiletag\util\CodeUtil.class

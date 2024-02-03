@@ -1,0 +1,33 @@
+server:
+  port: 8711
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+gs:
+  log:
+    transLogDir: D:/StudySource/GenSI2/log
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://192.168.65.71:3306/tl_mall_open?characterEncoding=utf-8&autoReconnect=true&serverTimezone=GMT-8
+    username: tlmall
+    password: tlmall123
+    druid:
+      filters: stat
+      max-active: 20
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      validation-query: select 1
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-pool-prepared-statement-per-connection-size: 50
+      default-auto-commit: true
+  application:
+    name: tulingmall-open
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 192.168.65.206:8848,192.168.65.209:8848,192.168.65.210:8848
